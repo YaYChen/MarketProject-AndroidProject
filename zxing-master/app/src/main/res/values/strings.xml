@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Market</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+    <string name="title_search_button">查询商品</string>
+    <string name="title__edit_button">编辑商品</string>
+    <string name="title_activity_product">ProductActivity</string>
+    <string name="action_settings">Settings</string>
+    <!--product-->
+    <string name="product_name">名称: </string>
+    <string name="product_category">类别: </string>
+    <string name="product_specification">规格: </string>
+    <string name="product_price">售价: </string>
+
+</resources>
