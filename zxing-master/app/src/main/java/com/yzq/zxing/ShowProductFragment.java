@@ -7,6 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import entity.Product;
 import service.ProductService;
@@ -47,11 +48,17 @@ public class ShowProductFragment extends Fragment {
     }
 
     public void refresh(String code){
-        product = productService.getProductByCode(code);
-        tv_product_name.setText(R.string.product_name + product.getName());
-        tv_product_category.setText(R.string.product_category + product.getCategory().getName());
-        tv_product_specification.setText(R.string.product_specification + product.getSpecification());
-        tv_product_price.setText(R.string.product_price + product.getPrice());
+        try{
+            product = productService.getProductByCode(code);
+            iv_product_image.setImageBitmap(productService.getProductImage(product.getProductPicture()));
+            tv_product_name.setText(R.string.product_name + product.getName());
+            tv_product_category.setText(R.string.product_category + product.getCategory().getName());
+            tv_product_specification.setText(R.string.product_specification + product.getSpecification());
+            tv_product_price.setText(R.string.product_price + product.getPrice());
+        }catch (Exception e){
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+        }
+
     }
 
 }
