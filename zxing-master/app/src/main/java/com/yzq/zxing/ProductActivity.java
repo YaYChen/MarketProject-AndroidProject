@@ -27,9 +27,12 @@ public class ProductActivity extends AppCompatActivity {
         action = intent.getStringExtra("action");
         switch (action){
             case "search":
-                ShowProductFragment showProductFragment = new ShowProductFragment();
-                showProductFragment.refresh(code);
+                ShowProductFragment showProductFragment = ShowProductFragment.newInstance(code);
                 replaceFragment(showProductFragment);
+                break;
+            case "edit":
+                EditProductFragment editProductFragment = EditProductFragment.newInstance(code);
+                replaceFragment(editProductFragment);
                 break;
                 default:
         }

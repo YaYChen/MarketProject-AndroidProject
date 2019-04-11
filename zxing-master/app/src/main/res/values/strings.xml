@@ -14,5 +14,8 @@
     <string name="product_specification">规格: </string>
     <string name="product_purchasePrice">进价: </string>
     <string name="product_price">售价: </string>
+    <!--button-->
+    <string name="button_cancel">取消</string>
+    <string name="button_confirm">确认</string>
 
 </resources>

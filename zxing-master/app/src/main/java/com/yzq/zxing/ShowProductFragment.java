@@ -17,6 +17,10 @@ import service.ProductService;
  */
 public class ShowProductFragment extends Fragment {
 
+    private static final String ARG_CODE = "code";
+
+    private String code;
+
     private View view;
 
     private ImageView iv_product_image;
@@ -31,11 +35,29 @@ public class ShowProductFragment extends Fragment {
     public ShowProductFragment() {
     }
 
+    public static ShowProductFragment newInstance(String code) {
+        ShowProductFragment fragment = new ShowProductFragment();
+        Bundle args = new Bundle();
+        args.putString(ARG_CODE, code);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            code = getArguments().getString(ARG_CODE);
+        }
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        // Inflate the layout for this fragment
         view = inflater.inflate(R.layout.fragment_show_product, container, false);
         initialView();
+        refresh();
         return view;
     }
 
@@ -47,7 +69,7 @@ public class ShowProductFragment extends Fragment {
         tv_product_price = view.findViewById(R.id.tv_product_price);
     }
 
-    public void refresh(String code){
+    private void refresh(){
         try{
             product = productService.getProductByCode(code);
             iv_product_image.setImageBitmap(productService.getProductImage(product.getProductPicture()));
