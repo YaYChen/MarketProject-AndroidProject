@@ -29,4 +29,9 @@ public class GsonUtil {
         }
         return list;
     }
+
+    public static String parseObjectWithGson(Object o){
+        Gson gson = new Gson();
+        return gson.toJson(o);
+    }
 }

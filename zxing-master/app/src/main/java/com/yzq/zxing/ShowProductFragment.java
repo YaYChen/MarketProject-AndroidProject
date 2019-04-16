@@ -10,6 +10,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import entity.Product;
+import service.ImgService;
 import service.ProductService;
 
 /**
@@ -31,6 +32,7 @@ public class ShowProductFragment extends Fragment {
 
     private Product product;
     private ProductService productService = new ProductService();
+    private ImgService imgService = new ImgService();
 
     public ShowProductFragment() {
     }
@@ -72,7 +74,7 @@ public class ShowProductFragment extends Fragment {
     private void refresh(){
         try{
             product = productService.getProductByCode(code);
-            iv_product_image.setImageBitmap(productService.getProductImage(product.getProductPicture()));
+            iv_product_image.setImageBitmap(imgService.getProductImage(product.getProductPicture()));
             tv_product_name.setText(R.string.product_name + product.getName());
             tv_product_category.setText(R.string.product_category + product.getCategory().getName());
             tv_product_specification.setText(R.string.product_specification + product.getSpecification());

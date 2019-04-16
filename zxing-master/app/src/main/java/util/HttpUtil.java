@@ -2,6 +2,7 @@ package util;
 
 import java.io.IOException;
 
+import okhttp3.MultipartBody;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -26,6 +27,19 @@ public class HttpUtil {
     }
 
     public Response sendPostRequest(String requestURL, RequestBody requestBody) throws IOException{
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            return response;
+        }catch (IOException e){
+            throw e;
+        }
+    }
+
+    public Response sendPostRequestWithFile(String requestURL, MultipartBody requestBody) throws IOException{
         Request request = new Request.Builder()
                 .url(baseURL + requestURL)
                 .post(requestBody)

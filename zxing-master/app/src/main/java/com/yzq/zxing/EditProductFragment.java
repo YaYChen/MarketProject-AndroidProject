@@ -19,7 +19,9 @@ import java.util.List;
 import adapter.MySpinnerAdapter;
 import entity.Category;
 import entity.Product;
+import entity.Result;
 import service.CategoryService;
+import service.ImgService;
 import service.ProductService;
 
 
@@ -46,9 +48,13 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
 
     private Product product;
     private Category selectCategory;
+    private String imgFileName;
+
     private List<Category> categories = new ArrayList<>();
+
     private ProductService productService = new ProductService();
     private CategoryService categoryService = new CategoryService();
+    private ImgService imgService = new ImgService();
 
     public EditProductFragment() {
         // Required empty public constructor
@@ -83,19 +89,31 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.btn_cancel:
+        try{
+            switch (v.getId()) {
+                case R.id.btn_cancel:
+                    this.refresh();
+                    break;
+                case R.id.btn_confirm:
+                    if(this.getProductValueAfterEditing()){
+                        Result result = productService.insertProduct(this.product);
+                        Toast.makeText(getActivity(), result.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                    break;
+                case R.id.iv_product_image:
 
-                break;
-            case R.id.btn_confirm:
-
-                break;
-            default:
+                    this.imgFileName = "";
+                    break;
+                default:
+            }
+        }catch (Exception e){
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
     private void initialView(){
         iv_product_image = view.findViewById(R.id.iv_product_image);
+        iv_product_image.setOnClickListener(this);
         tv_product_code = view.findViewById(R.id.tv_product_code);
         et_product_name = view.findViewById(R.id.et_product_name);
         et_product_specification = view.findViewById(R.id.et_product_specification);
@@ -135,17 +153,31 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
         try{
             product = productService.getProductByCode(code);
             if(product != null){
-                iv_product_image.setImageBitmap(productService.getProductImage(product.getProductPicture()));
+                iv_product_image.setImageBitmap(imgService.getProductImage(product.getProductPicture()));
                 tv_product_code.setText(code);
                 et_product_name.setText(product.getName());
                 et_product_specification.setText(product.getSpecification());
                 et_product_purchasePrice.setText(product.getPurchasePrice());
                 et_product_price.setText(product.getPrice());
+                sp_product_category.setSelection(categories.indexOf(product.getCategory()));
             }
         }catch (Exception e){
             Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
         }
     }
 
-
+    private boolean getProductValueAfterEditing(){
+        try{
+            this.product.setName(et_product_name.getText().toString());
+            this.product.setSpecification(et_product_specification.getText().toString());
+            this.product.setProductPicture(this.imgFileName);
+            this.product.setCategory(this.selectCategory);
+            this.product.setPurchasePrice(et_product_purchasePrice.getText().toString());
+            this.product.setPrice(et_product_price.getText().toString());
+            return true;
+        }catch (Exception e){
+            Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT).show();
+            return false;
+        }
+    }
 }
