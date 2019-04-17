@@ -4,11 +4,17 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
 public class ProductActivity extends AppCompatActivity {
+
+    public static final int RESULT_LOAD_IMAGE = 1002;
+    public static final int RESULT_CAMERA_IMAGE = 1003;
 
     private String code;
     private String action;
@@ -43,6 +49,20 @@ public class ProductActivity extends AppCompatActivity {
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
         fragmentTransaction.replace(R.id.fragment_content,fragment);
         fragmentTransaction.commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+
+        if (resultCode == RESULT_OK ) {
+            if (requestCode == RESULT_LOAD_IMAGE && null != data) {
+
+            }else if (requestCode == RESULT_CAMERA_IMAGE) {
+
+            }
+        }
     }
 
 }
