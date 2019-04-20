@@ -30,12 +30,14 @@
             android:id="@+id/searchBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.Button"
             android:text="@string/title_search_button" />
 
         <Button
             android:id="@+id/editBtn"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:theme="@style/AppTheme.Button"
             android:text="@string/title__edit_button" />
 
     </LinearLayout>

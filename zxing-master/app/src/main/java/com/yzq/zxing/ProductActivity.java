@@ -23,6 +23,7 @@ import android.widget.PopupWindow;
 import java.io.File;
 import java.io.FileOutputStream;
 
+import entity.Result;
 import service.ImgService;
 
 public class ProductActivity extends AppCompatActivity implements EditProductFragment.OnEditProductFragmentListener {
@@ -84,7 +85,10 @@ public class ProductActivity extends AppCompatActivity implements EditProductFra
                     Bitmap bitmap = BitmapFactory.decodeStream(
                             getContentResolver().openInputStream(imageUri));
                     File imageFile = saveMyBitmap(bitmap);
-                    imgService.uploadImage(imageFile);
+                    Result result = imgService.uploadImage(imageFile);
+                    currentFragment = EditProductFragment.newInstance(code);
+                    ((EditProductFragment) currentFragment).showImg(result.getMessage(),bitmap);
+                    replaceFragment(currentFragment);
                 }catch (Exception e){
                     e.printStackTrace();
                 }

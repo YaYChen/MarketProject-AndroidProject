@@ -27,6 +27,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/product_name"/>
             <EditText
+                style="@style/Widget.AppCompat.EditText"
                 android:id="@+id/et_product_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -43,6 +44,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/product_specification"/>
             <EditText
+                style="@style/Widget.AppCompat.EditText"
                 android:id="@+id/et_product_specification"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -51,6 +53,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/product_purchasePrice"/>
             <EditText
+                style="@style/Widget.AppCompat.EditText"
                 android:id="@+id/et_product_purchasePrice"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -59,6 +62,7 @@
                 android:layout_height="wrap_content"
                 android:text="@string/product_price"/>
             <EditText
+                style="@style/Widget.AppCompat.EditText"
                 android:id="@+id/et_product_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content" />
@@ -72,6 +76,7 @@
         android:orientation="horizontal">
         <Button
             android:id="@+id/btn_cancel"
+            android:theme="@style/AppTheme.Button"
             android:text="@string/button_cancel"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -79,6 +84,7 @@
             android:layout_margin="10px"/>
         <Button
             android:id="@+id/btn_confirm"
+            android:theme="@style/AppTheme.Button"
             android:text="@string/button_confirm"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

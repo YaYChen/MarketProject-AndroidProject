@@ -1,5 +1,6 @@
 package com.yzq.zxing;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.app.Fragment;
 import android.view.LayoutInflater;
@@ -187,5 +188,9 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
         }
     }
 
+    public void showImg(String imgName, Bitmap img){
+        this.imgFileName = imgName;
+        this.iv_product_image.setImageBitmap(img);
+    }
 
 }
