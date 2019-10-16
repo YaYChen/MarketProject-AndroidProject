@@ -31,14 +31,11 @@ public class ProductActivity extends AppCompatActivity implements EditProductFra
     public static final int RESULT_LOAD_IMAGE = 1002;
     public static final int RESULT_CAMERA_IMAGE = 1003;
 
-    private Fragment currentFragment;
-
-    private String code;
     private String action;
 
     private Uri imageUri;
 
-    private ImgService imgService = new ImgService();
+    private ImgService imgService;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,26 +46,36 @@ public class ProductActivity extends AppCompatActivity implements EditProductFra
         selectFragment(getIntent());
     }
 
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+
     private void selectFragment(Intent intent){
-        code = intent.getStringExtra("code");
         action = intent.getStringExtra("action");
         switch (action){
             case "search":
-                currentFragment = ShowProductFragment.newInstance(code);
-                replaceFragment(currentFragment);
+                ShowProductFragment showProductFragment = new ShowProductFragment();
+                replaceFragment(showProductFragment);
                 break;
             case "edit":
-                currentFragment = EditProductFragment.newInstance(code);
-                replaceFragment(currentFragment);
+
                 break;
                 default:
         }
     }
 
-    private void replaceFragment(Fragment fragment){
+    private void replaceFragment(ShowProductFragment showProductFragment){
         FragmentManager fragmentManager = getFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_content,fragment);
+        fragmentTransaction.replace(R.id.fragment_content, showProductFragment);
+        fragmentTransaction.commit();
+    }
+
+    private void replaceFragment(EditProductFragment editProductFragment){
+        FragmentManager fragmentManager = getFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_content, editProductFragment);
         fragmentTransaction.commit();
     }
 
@@ -86,9 +93,9 @@ public class ProductActivity extends AppCompatActivity implements EditProductFra
                             getContentResolver().openInputStream(imageUri));
                     File imageFile = saveMyBitmap(bitmap);
                     Result result = imgService.uploadImage(imageFile);
-                    currentFragment = EditProductFragment.newInstance(code);
-                    ((EditProductFragment) currentFragment).showImg(result.getMessage(),bitmap);
-                    replaceFragment(currentFragment);
+                    //EditProductFragment editProductFragment = EditProductFragment.newInstance(code);
+                    //editProductFragment.showImg(result.getMessage(),bitmap);
+                    //replaceFragment(editProductFragment);
                 }catch (Exception e){
                     e.printStackTrace();
                 }
@@ -189,5 +196,4 @@ public class ProductActivity extends AppCompatActivity implements EditProductFra
         popupWindow.showAtLocation(popView, Gravity.BOTTOM,0,50);
 
     }
-
 }

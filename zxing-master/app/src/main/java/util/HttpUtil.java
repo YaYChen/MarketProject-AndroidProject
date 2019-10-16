@@ -26,9 +26,59 @@ public class HttpUtil {
         }
     }
 
-    public Response sendPostRequest(String requestURL, RequestBody requestBody) throws IOException{
+    public void sendGetRequest(String requestURL, okhttp3.Callback callback) {
         Request request = new Request.Builder()
                 .url(baseURL + requestURL)
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
+
+    public Response sendPostRequest(String requestURL, RequestBody requestBody) throws Exception{
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .post(requestBody)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            return response;
+        }catch (Exception e){
+            throw e;
+        }
+    }
+
+    public void sendPostRequest(String requestURL, RequestBody requestBody, okhttp3.Callback callback) {
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .post(requestBody)
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
+
+    public Response sendGetRequest(String requestURL, String token) throws IOException{
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .header("Authorization", token)
+                .build();
+        try{
+            Response response = client.newCall(request).execute();
+            return response;
+        }catch (IOException e){
+            throw e;
+        }
+    }
+
+    public void sendGetRequest(String requestURL, String token, okhttp3.Callback callback) {
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .header("Authorization", token)
+                .build();
+        client.newCall(request).enqueue(callback);
+    }
+
+    public Response sendPostRequest(String requestURL, RequestBody requestBody, String token) throws IOException{
+        Request request = new Request.Builder()
+                .url(baseURL + requestURL)
+                .header("Authorization", token)
                 .post(requestBody)
                 .build();
         try{
@@ -39,9 +89,10 @@ public class HttpUtil {
         }
     }
 
-    public Response sendPostRequestWithFile(String requestURL, MultipartBody requestBody) throws IOException{
+    public Response sendPostRequestWithFile(String requestURL, MultipartBody requestBody, String token) throws IOException{
         Request request = new Request.Builder()
                 .url(baseURL + requestURL)
+                .header("Authorization", token)
                 .post(requestBody)
                 .build();
         try{

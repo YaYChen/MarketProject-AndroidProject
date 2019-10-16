@@ -52,9 +52,9 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
 
     private List<Category> categories = new ArrayList<>();
 
-    private ProductService productService = new ProductService();
+    private ProductService productService;
     private CategoryService categoryService = new CategoryService();
-    private ImgService imgService = new ImgService();
+    private ImgService imgService;
 
     public EditProductFragment() {
         // Required empty public constructor
@@ -158,9 +158,9 @@ public class EditProductFragment extends Fragment implements View.OnClickListene
 
     private void refresh(){
         try{
-            product = productService.getProductByCode(code);
+            //product = productService.getProductByCode(code);
             if(product != null){
-                iv_product_image.setImageBitmap(imgService.getProductImage(product.getProductPicture()));
+                //iv_product_image.setImageBitmap(imgService.getProductImage(product.getProductPicture()));
                 tv_product_code.setText(code);
                 et_product_name.setText(product.getName());
                 et_product_specification.setText(product.getSpecification());

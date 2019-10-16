@@ -27,6 +27,8 @@ import com.yzq.zxinglibrary.encode.CodeCreator;
 
 import java.util.List;
 
+import session.SessionUserInfo;
+
 
 /**
  * @author: yaychen
@@ -52,14 +54,32 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         initView();
     }
 
+    @Override
+    protected void onStart(){
+        super.onStart();
+        this.CheckoutAuth();
+    }
+
+    @Override
+    protected void onRestart(){
+        super.onRestart();
+        this.CheckoutAuth();
+    }
+
 
     private void initView() {
         /*扫描按钮*/
         searchBtn = findViewById(R.id.searchBtn);
         searchBtn.setOnClickListener(this);
-
         editBtn = findViewById(R.id.editBtn);
         editBtn.setOnClickListener(this);
+    }
+
+    private void CheckoutAuth(){
+        if(SessionUserInfo.getInstance().userId == 0){
+            Intent intent = new Intent(this,LoginActivity.class);
+            startActivity(intent);
+        }
     }
 
     @Override
@@ -84,18 +104,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                     @Override
                     public void onAction(List<String> permissions) {
                         Intent intent = new Intent(MainActivity.this, CaptureActivity.class);
-                        /*ZxingConfig是配置类
-                         *可以设置是否显示底部布局，闪光灯，相册，
-                         * 是否播放提示音  震动
-                         * 设置扫描框颜色等
-                         * 也可以不传这个参数
-                         * */
                         ZxingConfig config = new ZxingConfig();
                         config.setPlayBeep(true);//是否播放扫描完成声音 默认为true
                         config.setShake(true);//是否震动  默认为true
-                        config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-                        config.setReactColor(R.color.red);//设置扫描框四个角的颜色 默认为淡蓝色
-                        config.setFrameLineColor(R.color.red);//设置扫描框边框颜色 默认无色
+                        config.setDecodeBarCode(true);//是否扫描条形码 默认为true
+                        config.setReactColor(R.color.black);//设置扫描框四个角的颜色 默认为淡蓝色
+                        config.setFrameLineColor(R.color.lightGray);//设置扫描框边框颜色 默认无色
                         config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
                         intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
                         startActivityForResult(intent, REQUEST_CODE_SCAN);
@@ -120,12 +134,10 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // 扫描二维码/条码回传
         if (requestCode == REQUEST_CODE_SCAN && resultCode == RESULT_OK) {
             if (data != null) {
-                String code = data.getStringExtra(Constant.CODED_CONTENT);
-                Intent intent = new Intent(MainActivity.this,ProductActivity.class);
-                intent.putExtra("code",code);
+                SessionUserInfo.getInstance().code = data.getStringExtra(Constant.CODED_CONTENT);
+                Intent intent = new Intent(MainActivity.this, ProductActivity.class);
                 intent.putExtra("action",action);
                 startActivity(intent);
             }
