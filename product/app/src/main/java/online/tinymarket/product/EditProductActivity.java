@@ -1,6 +1,9 @@
 package online.tinymarket.product;
 
+import android.Manifest;
+import android.app.Activity;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.Uri;
@@ -8,6 +11,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
@@ -20,6 +24,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.core.app.ActivityCompat;
 import online.tinymarket.product.adapter.CategorySpinnerAdapter;
 import online.tinymarket.product.entity.Category;
 import online.tinymarket.product.entity.Product;
@@ -34,9 +39,14 @@ import online.tinymarket.product.service.CategoryService;
 import online.tinymarket.product.service.ImgService;
 import online.tinymarket.product.service.ProductService;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -47,6 +57,12 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
 
     public static final int RESULT_LOAD_IMAGE = 1002;
     public static final int RESULT_CAMERA_IMAGE = 1003;
+
+    private static final int REQUEST_EXTERNAL_STORAGE = 1;
+    private static String[] PERMISSIONS_STORAGE = {
+            Manifest.permission.READ_EXTERNAL_STORAGE,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+    };
 
     private boolean isNewProduct = false;
 
@@ -74,10 +90,6 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
 
     private Bitmap bitmap;
 
-    public EditProductActivity(String code){
-        this.code = code;
-    }
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +104,7 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
 
     private void initialView(){
         this.iv_product_image = findViewById(R.id.iv_product_image);
+        this.iv_product_image.setOnClickListener(this);
         this.tv_product_code = findViewById(R.id.tv_product_code);
         this.et_product_name = findViewById(R.id.et_product_name);
         this.et_product_specification = findViewById(R.id.et_product_specification);
@@ -189,6 +202,8 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
                 "Operate failed!Message: " + errorMsg,
                 Toast.LENGTH_LONG);
         toast.show();
+        Intent intent = new Intent(EditProductActivity.this, MainActivity.class);
+        startActivity(intent);
     }
 
     public void handlerCategoryWhenOK(String msg){
@@ -234,6 +249,7 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
     public void handlerImgWhenOK(String msg){
         this.imgFileName = msg;
         this.iv_product_image.setImageBitmap(this.bitmap);
+        this.product.setProductPicture(this.code + ".jpg");
     }
 
     public void handlerImgWhenOK(Bitmap bitmap){
@@ -260,7 +276,6 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
             this.product.setCategory(this.selectCategory);
             this.product.setPurchasePrice(et_product_purchasePrice.getText().toString());
             this.product.setPrice(et_product_price.getText().toString());
-            this.product.setProductPicture(this.imgFileName);
             return true;
         }catch (Exception e){
             Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
@@ -270,7 +285,6 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
 
     public void showPopueWindow(){
         View popView = View.inflate(this,R.layout.popup_camera_need_view,null);
-        Button bt_album = popView.findViewById(R.id.btn_pop_album);
         Button bt_camera = popView.findViewById(R.id.btn_pop_camera);
         Button bt_cancel = popView.findViewById(R.id.btn_pop_cancel);
         //获取屏幕宽高
@@ -283,14 +297,6 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
         //点击外部popueWindow消失
         popupWindow.setOutsideTouchable(true);
 
-        bt_album.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                popupWindow.dismiss();
-
-            }
-        });
         bt_camera.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -345,15 +351,14 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-
         if (resultCode == RESULT_OK ) {
-            if (requestCode == RESULT_LOAD_IMAGE && null != data) {
+            if (requestCode == RESULT_LOAD_IMAGE) {
 
             }else if (requestCode == RESULT_CAMERA_IMAGE) {
                 try{
                     bitmap = BitmapFactory.decodeStream(
                             getContentResolver().openInputStream(imageUri));
-                    File imageFile = saveMyBitmap(bitmap);
+                    File imageFile = compressImage(bitmap);
                     ImgHandler handlerImg = new ImgHandler(this, HttpOperating.UploadData);
                     ImgService imgService = new ImgService(handlerImg.doHandler);
                     imgService.uploadImage(imageFile);
@@ -365,23 +370,44 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
         }
     }
 
-    public File saveMyBitmap(Bitmap mBitmap){
-        File storageDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DCIM);
-        File file = null;
+    /**
+     * 压缩图片（质量压缩）
+     *
+     * @param bitmap
+     */
+    public File compressImage(Bitmap bitmap) {
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 30, baos);//质量压缩方法，这里100表示不压缩，把压缩后的数据存放到baos中
+        File file = new File(Environment.getExternalStorageDirectory(), this.code + ".jpg");
         try {
-            file = File.createTempFile(
-                    this.code,  /* prefix */
-                    ".jpg",         /* suffix */
-                    storageDir      /* directory */
-            );
-
-            FileOutputStream out=new FileOutputStream(file);
-            mBitmap.compress(Bitmap.CompressFormat.JPEG, 20, out);
-            out.flush();
-            out.close();
-        } catch (Exception e) {
+            this.verifyStoragePermissions(EditProductActivity.this);
+            FileOutputStream fos = new FileOutputStream(file);
+            try {
+                fos.write(baos.toByteArray());
+                fos.flush();
+                fos.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-        return  file;
+        return file;
+    }
+
+    /**
+     * 在对sd卡进行读写操作之前调用这个方法
+     * Checks if the app has permission to write to device storage
+     * If the app does not has permission then the user will be prompted to grant permissions
+     */
+    private void verifyStoragePermissions(Activity activity) {
+        // Check if we have write permission
+        int permission = ActivityCompat.checkSelfPermission(activity,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+        if (permission != PackageManager.PERMISSION_GRANTED) {
+            // We don't have permission so prompt the user
+            ActivityCompat.requestPermissions(activity, PERMISSIONS_STORAGE,
+                    REQUEST_EXTERNAL_STORAGE);
+        }
     }
 }

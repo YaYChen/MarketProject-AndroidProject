@@ -7,6 +7,7 @@
     <string name="title_activity_edit_product">EditProduct</string>
     <string name="title_activity_show_product">ShowProduct</string>
     <string name="title_activity_list_product">ListProduct</string>
+    <string name="title_activity_login">Sign in</string>
     <string name="action_settings">Settings</string>
     <!--product-->
     <string name="product_code">条码: </string>
@@ -25,13 +26,11 @@
     <string name="button_product_search">商品查询</string>
     <string name="button_product_edit">商品录入</string>
     <!--login-->
-    <string name="title_activity_login">Sign in</string>
-    <string name="login_name">Login Name</string>
-    <string name="login_password">Password</string>
-    <string name="action_sign_in">Sign In</string>
+    <string name="login_name">账号</string>
+    <string name="login_password">密码</string>
+    <string name="action_sign_in">登录</string>
     <string name="welcome">"Welcome !"</string>
-    <string name="invalid_username">Not a valid username</string>
-    <string name="invalid_password">Not a valid password</string>
-    <string name="login_failed">"Login failed"</string>
-    <string name="title_activity_list">ListActivity</string>
+    <string name="invalid_username">无效账号</string>
+    <string name="invalid_password">无效密码</string>
+    <string name="login_failed">登录失败</string>
 </resources>

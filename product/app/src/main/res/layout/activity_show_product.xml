@@ -30,7 +30,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:padding="@dimen/cardview_default_radius">
+            android:padding="@dimen/cardview_default_radius"
+            android:layout_weight="1">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -110,14 +111,13 @@
                 android:visibility="gone"
                 android:textSize="40dp"
                 android:textColor="@color/black"/>
-
             <Button
                 android:id="@+id/btn_return"
                 android:layout_marginTop="40dp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/button_return"
-                android:textSize="30dp"
+                android:textSize="40dp"
                 android:theme="@style/AppTheme.Button"/>
         </LinearLayout>
     </ScrollView>

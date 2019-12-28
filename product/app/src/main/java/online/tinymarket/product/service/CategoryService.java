@@ -41,7 +41,7 @@ public class CategoryService {
                         public void onResponse(Call call, Response response) {
                             try{
                                 String responseStr = response.body().string();
-                                List<Category> categories = GsonUtil.GsonToList(responseStr, Category.class);
+                                List<Category> categories = GsonUtil.jsonToArrayList(responseStr, Category.class);
                                 Message message = new Message();
                                 message.what = REQUEST_OK;
                                 message.obj = (Object) categories;

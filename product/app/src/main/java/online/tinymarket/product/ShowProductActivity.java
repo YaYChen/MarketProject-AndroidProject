@@ -55,7 +55,7 @@ public class ShowProductActivity extends AppCompatActivity implements IHandlerPr
         btn_return.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(ShowProductActivity.this,MainActivity.class);
+                Intent intent = new Intent(ShowProductActivity.this, MainActivity.class);
                 startActivity(intent);
             }
         });

@@ -31,19 +31,19 @@
         <Button
             android:id="@+id/searchBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_height="100dp"
+            android:layout_margin="60dp"
             android:theme="@style/AppTheme.Button"
-            android:textSize="30dp"
+            android:textSize="50dp"
             android:text="@string/button_product_search" />
 
         <Button
             android:id="@+id/editBtn"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:layout_height="100dp"
+            android:layout_margin="60dp"
             android:theme="@style/AppTheme.Button"
-            android:textSize="30dp"
+            android:textSize="50dp"
             android:text="@string/button_product_edit" />
 
     </LinearLayout>
