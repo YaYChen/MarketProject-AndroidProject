@@ -9,7 +9,7 @@ import okhttp3.RequestBody;
 
 public class HttpUtil {
 
-    private String baseURL = "http://101.132.123.27:8080";
+    private String baseURL = "http://106.54.251.156:8000";
 
     private OkHttpClient client = new OkHttpClient();
 

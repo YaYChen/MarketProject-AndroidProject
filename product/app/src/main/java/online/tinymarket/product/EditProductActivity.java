@@ -312,7 +312,7 @@ public class EditProductActivity extends AppCompatActivity implements IHandlerPr
                 }
                 if(Build.VERSION.SDK_INT >= 24){
                     imageUri = FileProvider.getUriForFile(EditProductActivity.this,
-                            "com.yzq.zxing.fileprovider",outputImage);
+                            "online.tinymarket.product.fileprovider",outputImage);
                 }else{
                     imageUri = Uri.fromFile(outputImage);
                 }

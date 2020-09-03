@@ -7,6 +7,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Toast;
 
 import online.tinymarket.product.enums.ProductOperating;
 import online.tinymarket.product.session.SessionUserInfo;
@@ -14,8 +15,8 @@ import online.tinymarket.product.session.SessionUserInfo;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 
-import com.xys.libzxing.zxing.activity.CaptureActivity;
-import com.xys.libzxing.zxing.encoding.EncodingUtils;
+import com.google.zxing.integration.android.IntentIntegrator;
+import com.google.zxing.integration.android.IntentResult;
 
 /**
  * @author: yaychen
@@ -29,8 +30,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     private Button editBtn;
 
     private ProductOperating operating;
-
-    private int REQUEST_CODE_SCAN = 1001;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,26 +90,33 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     private void startScan(){
-        Intent openCameraIntent = new Intent(MainActivity.this, CaptureActivity.class);
-        startActivityForResult(openCameraIntent, this.REQUEST_CODE_SCAN);
+        // 创建IntentIntegrator对象
+        IntentIntegrator intentIntegrator = new IntentIntegrator(MainActivity.this);
+        // 开始扫描
+        intentIntegrator.initiateScan();
     }
 
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (resultCode == RESULT_OK) {
-            Bundle bundle = data.getExtras();
-            String barcode = bundle.getString("result");
-            if(operating == ProductOperating.Search){
-                Intent showProductIntent = new Intent(MainActivity.this, ShowProductActivity.class);
-                showProductIntent.putExtra("code",barcode);
-                startActivity(showProductIntent);
-            }else{
-                Intent editProductIntent = new Intent(MainActivity.this,EditProductActivity.class);
-                editProductIntent.putExtra("code",barcode);
-                startActivity(editProductIntent);
+        IntentResult result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data);
+        if (result != null) {
+            String barcode = result.getContents() == null ? null:result.getContents();
+            if (barcode == null) {
+                Toast.makeText(this, "取消扫描", Toast.LENGTH_LONG).show();
+            } else {
+                if(operating == ProductOperating.Search){
+                    Intent showProductIntent = new Intent(MainActivity.this, ShowProductActivity.class);
+                    showProductIntent.putExtra("code",barcode);
+                    startActivity(showProductIntent);
+                }else{
+                    Intent editProductIntent = new Intent(MainActivity.this,EditProductActivity.class);
+                    editProductIntent.putExtra("code",barcode);
+                    startActivity(editProductIntent);
+                }
             }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
         }
     }
 

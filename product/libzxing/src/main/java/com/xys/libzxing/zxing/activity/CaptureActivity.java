@@ -207,7 +207,7 @@ public final class CaptureActivity extends AppCompatActivity implements SurfaceH
             // Creating the handler starts the preview, which can also throw a
             // RuntimeException.
             if (handler == null) {
-                handler = new CaptureActivityHandler(this, cameraManager, DecodeThread.ALL_MODE);
+                handler = new CaptureActivityHandler(this, cameraManager, DecodeThread.BARCODE_MODE);
             }
 
             initCrop();
